@@ -194,10 +194,28 @@ internal class HttpPageLoader(
             if (!chapterCache.isImageInCache(imageUrl)) {
                 page.status = Page.State.DOWNLOAD_IMAGE
                 val imageResponse = source.getImage(page, dataSaver)
+                
+                val contentType = imageResponse.header("Content-Type") ?: ""
+                val isTextResponse = contentType.startsWith("text/") || imageUrl.endsWith(".html") || imageUrl.endsWith(".txt")
+                
                 chapterCache.putImageToCache(imageUrl, imageResponse)
+                
+                if (isTextResponse) {
+                    page.textContent = chapterCache.getImageFile(imageUrl).readText()
+                    page.status = Page.State.READY
+                    return
+                }
             }
 
-            page.stream = { chapterCache.getImageFile(imageUrl).inputStream() }
+            val file = chapterCache.getImageFile(imageUrl)
+            val isTextCached = imageUrl.endsWith(".html") || imageUrl.endsWith(".txt")
+            if (isTextCached) {
+                page.textContent = file.readText()
+                page.status = Page.State.READY
+                return
+            }
+
+            page.stream = { file.inputStream() }
             page.status = Page.State.READY
         } catch (e: Throwable) {
             page.status = Page.State.ERROR

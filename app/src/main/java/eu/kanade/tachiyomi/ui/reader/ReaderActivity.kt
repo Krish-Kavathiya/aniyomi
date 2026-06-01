@@ -532,7 +532,13 @@ class ReaderActivity : BaseActivity() {
      */
     private fun updateViewer() {
         val prevViewer = viewModel.state.value.viewer
-        val newViewer = ReadingMode.toViewer(viewModel.getMangaReadingMode(), this)
+        val isTextChapter = viewModel.state.value.viewerChapters?.currChapter?.pages?.firstOrNull()?.textContent != null
+        
+        val newViewer = if (isTextChapter) {
+            eu.kanade.tachiyomi.ui.reader.viewer.text.TextViewer(this)
+        } else {
+            ReadingMode.toViewer(viewModel.getMangaReadingMode(), this)
+        }
 
         if (window.sharedElementEnterTransition is MaterialContainerTransform) {
             // Wait until transition is complete to avoid crash on API 26

@@ -34,6 +34,16 @@ class EpubReader(private val reader: ArchiveReader) : Closeable by reader {
     }
 
     /**
+     * Returns the path of all the html/xhtml pages found in the epub file.
+     */
+    fun getHtmlPages(): List<String> {
+        val ref = getPackageHref()
+        val doc = getPackageDocument(ref)
+        val basePath = getParentDirectory(ref)
+        return getPagesFromDocument(doc).map { resolveZipPath(basePath, it) }
+    }
+
+    /**
      * Returns the path to the package document.
      */
     fun getPackageHref(): String {
