@@ -90,6 +90,23 @@ class ReaderPreferences(
 
     // endregion
 
+    // region Text / Typography
+
+    fun textFont() = preferenceStore.getString("pref_text_font", "sans-serif")
+
+    fun textFontSize() = preferenceStore.getInt("pref_text_font_size", 16)
+
+    /** Stored as percent (e.g., 120 = 1.2 line height) */
+    fun textLineHeightPercent() = preferenceStore.getInt("pref_text_line_height", 120)
+
+    /** Margin in dp around the text content */
+    fun textMarginDp() = preferenceStore.getInt("pref_text_margin", 16)
+
+    /** Theme: 0=Light,1=Sepia,2=Dark,3=Amoled */
+    fun textTheme() = preferenceStore.getInt("pref_text_theme", 0)
+
+    // endregion
+
     // region Split two page spread
 
     fun dualPageSplitPaged() = preferenceStore.getBoolean("pref_dual_page_split", false)

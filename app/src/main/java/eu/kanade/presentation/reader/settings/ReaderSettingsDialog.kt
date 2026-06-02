@@ -30,6 +30,7 @@ fun ReaderSettingsDialog(
         stringResource(MR.strings.pref_category_reading_mode),
         stringResource(MR.strings.pref_category_general),
         stringResource(MR.strings.custom_filter),
+        stringResource(MR.strings.player_sheets_sub_typography_title),
     )
     val pagerState = rememberPagerState { tabTitles.size }
 
@@ -60,11 +61,12 @@ fun ReaderSettingsDialog(
                     .padding(vertical = TabbedDialogPaddings.Vertical)
                     .verticalScroll(rememberScrollState()),
             ) {
-                when (page) {
-                    0 -> ReadingModePage(screenModel)
-                    1 -> GeneralPage(screenModel)
-                    2 -> ColorFilterPage(screenModel)
-                }
+                    when (page) {
+                        0 -> ReadingModePage(screenModel)
+                        1 -> GeneralPage(screenModel)
+                        2 -> ColorFilterPage(screenModel)
+                        3 -> TypographyPage(screenModel)
+                    }
             }
         }
     }

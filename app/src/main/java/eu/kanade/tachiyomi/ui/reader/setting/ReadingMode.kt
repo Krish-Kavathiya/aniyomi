@@ -54,6 +54,13 @@ enum class ReadingMode(
         Direction.Vertical,
         ViewerType.Webtoon,
     ),
+    TEXT(
+        MR.strings.label_default,
+        R.drawable.ic_reader_default_24dp,
+        0x00000006,
+        Direction.Vertical,
+        ViewerType.Text,
+    ),
     ;
 
     companion object {
@@ -73,6 +80,7 @@ enum class ReadingMode(
                 VERTICAL -> VerticalPagerViewer(activity)
                 WEBTOON -> WebtoonViewer(activity)
                 CONTINUOUS_VERTICAL -> WebtoonViewer(activity, isContinuous = false)
+                TEXT -> eu.kanade.tachiyomi.ui.reader.viewer.text.TextViewer(activity)
                 DEFAULT -> throw IllegalStateException(
                     "Preference value must be resolved: $preference",
                 )
@@ -88,5 +96,6 @@ enum class ReadingMode(
     sealed interface ViewerType {
         data object Pager : ViewerType
         data object Webtoon : ViewerType
+        data object Text : ViewerType
     }
 }
