@@ -2,6 +2,7 @@ package eu.kanade.tachiyomi.ui.reader.viewer.text
 
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderPreferences
 import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
 
 /**
  * Small runtime wrapper to expose typography preferences to the TextViewer.

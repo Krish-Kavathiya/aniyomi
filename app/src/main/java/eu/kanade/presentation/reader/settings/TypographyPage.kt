@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderPreferences
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderSettingsScreenModel
 import tachiyomi.i18n.MR
+import tachiyomi.i18n.aniyomi.AYMR
 import tachiyomi.presentation.core.components.HeadingItem
 import tachiyomi.presentation.core.components.SettingsChipRow
 import tachiyomi.presentation.core.components.SliderItem
@@ -17,11 +18,11 @@ import tachiyomi.presentation.core.util.collectAsState
 
 @Composable
 internal fun ColumnScope.TypographyPage(screenModel: ReaderSettingsScreenModel) {
-    HeadingItem(MR.strings.player_sheets_sub_typography_title)
+    HeadingItem(AYMR.strings.player_sheets_sub_typography_title)
 
     // Font family selection (minimal set)
     val fontPref by screenModel.preferences.textFont().collectAsState()
-    SettingsChipRow(MR.strings.player_sheets_sub_typography_font) {
+    SettingsChipRow(AYMR.strings.player_sheets_sub_typography_font) {
         listOf("sans-serif", "serif", "monospace").map { font ->
             FilterChip(
                 selected = fontPref == font,
@@ -34,12 +35,11 @@ internal fun ColumnScope.TypographyPage(screenModel: ReaderSettingsScreenModel) 
     // Font size
     val fontSize by screenModel.preferences.textFontSize().collectAsState()
     SliderItem(
-        label = stringResource(MR.strings.player_sheets_sub_typography_font_size),
+        label = stringResource(AYMR.strings.player_sheets_sub_typography_font_size),
         value = fontSize,
+        valueRange = 10..40,
         valueText = "$fontSize",
         onChange = { screenModel.preferences.textFontSize().set(it) },
-        max = 40,
-        min = 10,
     )
 
     // Line height (percent)
@@ -47,26 +47,24 @@ internal fun ColumnScope.TypographyPage(screenModel: ReaderSettingsScreenModel) 
     SliderItem(
         label = "Line height",
         value = lineHeight,
+        valueRange = 100..200,
         valueText = "$lineHeight%",
         onChange = { screenModel.preferences.textLineHeightPercent().set(it) },
-        max = 200,
-        min = 100,
     )
 
     // Margin
     val margin by screenModel.preferences.textMarginDp().collectAsState()
     SliderItem(
-        label = stringResource(MR.strings.player_sheets_sub_typography_border_size),
+        label = stringResource(AYMR.strings.player_sheets_sub_typography_border_size),
         value = margin,
+        valueRange = 0..48,
         valueText = "$margin dp",
         onChange = { screenModel.preferences.textMarginDp().set(it) },
-        max = 48,
-        min = 0,
     )
 
     // Theme selection
     val theme by screenModel.preferences.textTheme().collectAsState()
-    SettingsChipRow(MR.strings.player_sheets_sub_typography_title) {
+    SettingsChipRow(MR.strings.pref_reader_theme) {
         listOf(
             0 to "Light",
             1 to "Sepia",

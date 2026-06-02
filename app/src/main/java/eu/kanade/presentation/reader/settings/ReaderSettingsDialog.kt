@@ -12,12 +12,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.window.DialogWindowProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import eu.kanade.presentation.components.TabbedDialog
 import eu.kanade.presentation.components.TabbedDialogPaddings
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderSettingsScreenModel
-import kotlinx.collections.immutable.persistentListOf
+import eu.kanade.tachiyomi.ui.reader.viewer.text.TextViewer
+import kotlinx.collections.immutable.toImmutableList
 import tachiyomi.i18n.MR
+import tachiyomi.i18n.aniyomi.AYMR
 import tachiyomi.presentation.core.i18n.stringResource
+import tachiyomi.presentation.core.util.collectAsState
 
 @Composable
 fun ReaderSettingsDialog(
@@ -26,12 +32,20 @@ fun ReaderSettingsDialog(
     onHideMenus: () -> Unit,
     screenModel: ReaderSettingsScreenModel,
 ) {
-    val tabTitles = persistentListOf(
-        stringResource(MR.strings.pref_category_reading_mode),
-        stringResource(MR.strings.pref_category_general),
-        stringResource(MR.strings.custom_filter),
-        stringResource(MR.strings.player_sheets_sub_typography_title),
-    )
+    val viewer by screenModel.viewerFlow.collectAsState()
+    val isTextViewer = viewer is TextViewer
+
+    val tabs = remember(isTextViewer) {
+        buildList {
+            add(MR.strings.pref_category_reading_mode)
+            add(MR.strings.pref_category_general)
+            add(MR.strings.custom_filter)
+            if (isTextViewer) {
+                add(AYMR.strings.player_sheets_sub_typography_title)
+            }
+        }
+    }
+    val tabTitles = tabs.map { stringResource(it) }.toImmutableList()
     val pagerState = rememberPagerState { tabTitles.size }
 
     BoxWithConstraints {
@@ -47,7 +61,8 @@ fun ReaderSettingsDialog(
             val window = (LocalView.current.parent as? DialogWindowProvider)?.window
 
             LaunchedEffect(pagerState.currentPage) {
-                if (pagerState.currentPage == 2) {
+                val isCustomFilter = tabs.getOrNull(pagerState.currentPage) == MR.strings.custom_filter
+                if (isCustomFilter) {
                     window?.setDimAmount(0f)
                     onHideMenus()
                 } else {
@@ -61,12 +76,12 @@ fun ReaderSettingsDialog(
                     .padding(vertical = TabbedDialogPaddings.Vertical)
                     .verticalScroll(rememberScrollState()),
             ) {
-                    when (page) {
-                        0 -> ReadingModePage(screenModel)
-                        1 -> GeneralPage(screenModel)
-                        2 -> ColorFilterPage(screenModel)
-                        3 -> TypographyPage(screenModel)
-                    }
+                when (tabs[page]) {
+                    MR.strings.pref_category_reading_mode -> ReadingModePage(screenModel)
+                    MR.strings.pref_category_general -> GeneralPage(screenModel)
+                    MR.strings.custom_filter -> ColorFilterPage(screenModel)
+                    AYMR.strings.player_sheets_sub_typography_title -> TypographyPage(screenModel)
+                }
             }
         }
     }
